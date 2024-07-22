@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Convinient store</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <link href="./output.css" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -105,14 +107,8 @@
       </nav>
     </header>
     <main>
-        <div class="grid lg:flex gap-y-4 gap-x-48 lg:items-start mt-3 mx-auto justify-center">
-            <form>
-                <!-- search input and dropdown -->
-            </form>
-            <div class="flex sm:w-[95%] max-w-[21rem] md:w-full">
-                <!-- sort by select -->
-            </div>
-        </div>
+   
+       
         <div x-data="productStore()" x-init="fetchProducts">
             <div class="mb-4">
                 <input type="text" placeholder="Search" x-model="searchTerm" @input="searchProducts" class="p-2 border border-gray-300 rounded">
@@ -157,7 +153,7 @@
             </template>
 
             <!-- modal -->
-            <div x-show="isOpenModal"class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"">
+            <div x-show="isOpenModal" class="fixed top-0 left-0 w-full h-screen bg-gray-500 bg-opacity-50 flex justify-center">
                 <div class="bg-white rounded-lg shadow-md p-5 w-1/2">
                     <h2 x-text="selectedProduct.title" class="text-lg font-semibold mb-2"></h2>
                     <p x-text="selectedProduct.description" class="text-gray-600 mb-4"></p>

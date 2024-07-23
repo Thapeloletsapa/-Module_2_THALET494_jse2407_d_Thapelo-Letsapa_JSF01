@@ -72,25 +72,12 @@
                     2
                   </p>
                 </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  class="file: h-6 w-6 stroke-white cursor-pointer"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                  />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 19.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5zm3.5-1.5c-.828 0-1.5.671-1.5 1.5s.672 1.5 1.5 1.5 1.5-.671 1.5-1.5c0-.828-.672-1.5-1.5-1.5zm1.336-5l1.977-7h-16.813l2.938 7h11.898zm4.969-10l-3.432 12h-12.597l.839 2h13.239l3.474-12h1.929l.743-2h-4.195z"/></svg>
               </li>
               <li class="block md:hidden">
                 <a
                   href="/cart"
-                  class="block py-2 px-3 text-black rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                  class="block py-2 px-3 text-black rounded hover:bg-gray-100 md:hover:bg-black md:border-0 md:hover:text-blue-700 md:p-0"
                   >Cart</a
                 >
               </li>
@@ -106,9 +93,7 @@
         </div>
       </nav>
     </header>
-    <main>
-   
-       
+    <main> 
         <div x-data="productStore()" x-init="fetchProducts">
             <div class="mb-4">
                 <input type="text" placeholder="Search" x-model="searchTerm" @input="searchProducts" class="p-2 border border-gray-300 rounded">
@@ -134,9 +119,8 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <template x-for="product in products" :key="product.id">
                         <div class="bg-white rounded-lg shadow-md p-5">
-                            <img :src="product.image" :alt="product.title" class="w-full h-64 object-cover mb-4 rounded-t-lg">
+                            <img :src="product.image" :alt="product.title" class="w-full h-64 object-contain mb-4 rounded-t-lg">
                             <h2 x-text="product.title" class="text-lg font-semibold mb-2"></h2>
-                            <p x-text="product.description" class="text-gray-600 mb-4"></p>
                             <p class="text-xl font-bold text-gray-800">$<span x-text="product.price"></span></p>
                             <button @click="openModal(product)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Details</button>
                         </div>
@@ -144,90 +128,91 @@
                 </div>
             </template>
 
-            <template x-if="!loading && products.length === 0">
-                <p>No products available.</p>
-            </template>
-
             <template x-if="error">
                 <p x-text="error.message" class="text-red-500"></p>
             </template>
 
             <!-- modal -->
-            <div x-show="isOpenModal" class="fixed top-0 left-0 w-full h-screen bg-gray-500 bg-opacity-50 flex justify-center">
-                <div class="bg-white rounded-lg shadow-md p-5 w-1/2">
-                    <h2 x-text="selectedProduct.title" class="text-lg font-semibold mb-2"></h2>
-                    <p x-text="selectedProduct.description" class="text-gray-600 mb-4"></p>
-                    <p class="text-xl font-bold text-gray-800">$<span x-text="selectedProduct.price"></span></p>
-                    <p x-text="selectedProduct.category" class="text-gray-600 mb-4"></p>
-                    <p x-text="selectedProduct.rating" class="text-gray-600 mb-4"></p>
-                    <button @click="isOpenModal = false" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Close</button>
-                </div>
-            </div>
-        </div>
+          <!-- modal -->
+<div x-show="isOpenModal" class="fixed top-0 left-0 z-[99] flex items-center inset-0 justify-center w-screen h-screen bg-black bg-opacity-50" x-cloak>
+  <div class="bg-white rounded-lg shadow-md p-5 w-1/2">
+    <h2 x-text="selectedProduct.title" class="text-lg font-semibold mb-2"></h2>
+    <p x-text="selectedProduct.description" class="text-gray-600 mb-4"></p>
+    <img :src="selectedProduct.image" alt="" class="w-full object-contain h-48 my-4" />
+    <p class="text-xl font-bold text-gray-800">$<span x-text="selectedProduct.price"></span></p>
+    <p x-text="selectedProduct.category" class="text-gray-600 mb-4"></p>
+    
+    <button @click="isOpenModal = false" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Close</button>
+  </div>
+</div>
 
         <script>
-            function productStore() {
-                return {
-                    products: [],
-                    originalProducts: [],
-                    loading: false,
-                   error: false,
-                    sorting: 'default',
-                    searchTerm: '',
-                    filterItem: 'All categories',
-                    isOpenModal: false,
-                    selectedProduct: {},
-
-                    async fetchProducts() {
-                        this.loading = true;
-                        this.error = false;
-                        let url = 'https://fakestoreapi.com/products';
-                        if (this.filterItem!== 'All categories') {
-                            url += `/category/${this.filterItem}`;
-                        }
-                        try {
-                            const response = await fetch(url);
-                            if (!response.ok) {
-                                throw new Error('Data fetching failed, please check your network connection');
-                            }
-                            const data = await response.json();
-                            this.products = data;
-                            this.originalProducts = JSON.parse(JSON.stringify(data));
-                            this.sortProducts();
-                            this.searchProducts();
-                        } catch (error) {
-                            this.error = error;
-                        } finally {
-                            this.loading = false;
-                        }
-                    },
-
-                    sortProducts() {
-                        if (this.sorting!== 'default') {
-                            this.products.sort((a, b) =>
-                                this.sorting === 'low'? a.price - b.price : b.price - a.price
-                            );
-                        } else {
-                            this.products = JSON.parse(JSON.stringify(this.originalProducts));
-                        }
-                    },
-
-                    searchProducts() {
-                        if (this.searchTerm.trim()!== '') {
-                            this.products = this.originalProducts.filter(product =>
-                                product.title.toLowerCase().includes(this.searchTerm.toLowerCase())
-                            );
-                        } else {
-                            this.products = JSON.parse(JSON.stringify(this.originalProducts));
-                        }
-                    },
-
-                    openModal(product) {
-                        this.isOpenModal = true;
-                        this.selectedProduct = product;
-                    }
+          function productStore() {
+            return {
+              products: [],
+              originalProducts: [],
+              loading: false,
+              error: false,
+              sorting: 'default',
+              searchTerm: '',
+              filterItem: 'All categories',
+              isOpenModal: false,
+              selectedProduct: {},
+        
+              async fetchProducts() {
+                this.loading = true;
+                this.error = false;
+                let url = 'https://fakestoreapi.com/products';
+                if (this.filterItem !== 'All categories') {
+                  url += `/category/${this.filterItem}`;
                 }
-            }
+                try {
+                  const response = await fetch(url);
+                  if (!response.ok) {
+                    throw new Error('Data fetching failed, please check your network connection');
+                  }
+                  const data = await response.json();
+                  this.products = data;
+                  this.originalProducts = JSON.parse(JSON.stringify(data));
+                  this.sortProducts();
+                  this.searchProducts();
+                } catch (error) {
+                  this.error = error;
+                } finally {
+                  this.loading = false;
+                }
+              },
+        
+              sortProducts() {
+                if (this.sorting !== 'default') {
+                  this.products.sort((a, b) =>
+                    this.sorting === 'low' ? a.price - b.price : b.price - a.price
+                  );
+                } else {
+                  this.products = JSON.parse(JSON.stringify(this.originalProducts));
+                }
+              },
+        
+              searchProducts() {
+                if (this.searchTerm.trim() !== '') {
+                  this.products = this.originalProducts.filter(product =>
+                    product.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+                  );
+                } else {
+                  this.products = JSON.parse(JSON.stringify(this.originalProducts));
+                }
+              },
+        
+              async openModal(product) {
+                this.isOpenModal = true;
+                this.selectedProduct = product;
+                const productData = await fetch(`https://fakestoreapi.com/products/${product.id}`);
+                const data = await productData.json();
+                this.selectedProduct.rating = data.rating;
+                this.selectedProduct.reviews = data.reviews;
+              },
+            };
+          }
         </script>
     </body>
 </html>

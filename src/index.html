@@ -112,6 +112,11 @@
             </div>
 
             <template x-if="loading">
+              <div class="flex justify-center">
+                <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12H4zm2 5.291A7.962 7.962 0 014 19.708a7.962 7.962 0 0114-5.291zm13.707 2.293A7.962 7.962 0 0121 19.708a7.962 7.962 0 01-14-5.291zm2.293 13.707A7.962 7.962 0 0121 12.708a7.962 7.962 0 01-14 5.291z"></path>
+                </svg>
                 <p>Loading...</p>
             </template>
 
@@ -134,17 +139,27 @@
 
             <!-- modal -->
           <!-- modal -->
-<div x-show="isOpenModal" class="fixed top-0 left-0 z-[99] flex items-center inset-0 justify-center w-screen h-screen bg-black bg-opacity-50" x-cloak>
-  <div class="bg-white rounded-lg shadow-md p-5 w-1/2">
-    <h2 x-text="selectedProduct.title" class="text-lg font-semibold mb-2"></h2>
-    <p x-text="selectedProduct.description" class="text-gray-600 mb-4"></p>
-    <img :src="selectedProduct.image" alt="" class="w-full object-contain h-48 my-4" />
-    <p class="text-xl font-bold text-gray-800">$<span x-text="selectedProduct.price"></span></p>
-    <p x-text="selectedProduct.category" class="text-gray-600 mb-4"></p>
+          <div x-show="isOpenModal" class="fixed top-0 left-0 z-[99] flex items-center inset-0 justify-center w-screen h-screen bg-black bg-opacity-50" x-cloak>
+            <div class="bg-white rounded-lg shadow-md p-5 w-1/2">
+              <h2 x-text="selectedProduct.title" class="text-2xl font-bold mb-2"></h2>
+              <p x-text="selectedProduct.description" class="text-gray-600 mb-4"></p>
+              <img :src="selectedProduct.image" alt="" class="w-full h-48 object-contain my-4" />
+              <p class="text-xl font-bold text-gray-800">$<span x-text="selectedProduct.price"></span></p>
+              <p x-text="selectedProduct.category" class="text-gray-600 mb-4"></p>
+              <div class="flex items-center mb-4">
+                <span class="text-yellow-400">
+                  <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"></path>
+                  </svg>
     
-    <button @click="isOpenModal = false" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Close</button>
-  </div>
-</div>
+                </span>
+                <p x-text="selectedProduct.rating.rate" class="text-lg font-bold text-yellow-400 ml-2"></p>
+                <p class="text-gray-600 ml-2">/ 5</p>
+              </div>
+              <p x-text="`(${selectedProduct.rating.count} reviews)`" class="text-gray-600 mb-4"></p>
+              <button @click="isOpenModal = false" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Close</button>
+            </div>
+          </div>
 
         <script>
           function productStore() {
@@ -160,28 +175,29 @@
               selectedProduct: {},
         
               async fetchProducts() {
-                this.loading = true;
-                this.error = false;
-                let url = 'https://fakestoreapi.com/products';
-                if (this.filterItem !== 'All categories') {
-                  url += `/category/${this.filterItem}`;
-                }
-                try {
-                  const response = await fetch(url);
-                  if (!response.ok) {
-                    throw new Error('Data fetching failed, please check your network connection');
-                  }
-                  const data = await response.json();
-                  this.products = data;
-                  this.originalProducts = JSON.parse(JSON.stringify(data));
-                  this.sortProducts();
-                  this.searchProducts();
-                } catch (error) {
-                  this.error = error;
-                } finally {
-                  this.loading = false;
-                }
-              },
+        this.loading = true; // Set loading to true when fetching starts
+        this.error = false;
+        let url = 'https://fakestoreapi.com/products';
+        if (this.filterItem !== 'All categories') {
+          url += `/category/${this.filterItem}`;
+        }
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error('Data fetching failed, please check your network connection');
+          }
+          const data = await response.json();
+          this.products = data;
+          this.originalProducts = JSON.parse(JSON.stringify(data));
+          this.sortProducts();
+          this.searchProducts();
+        } catch (error) {
+          this.error = error;
+        } finally {
+          this.loading = false; // Set loading to false when fetching is complete
+        }
+      },
+
         
               sortProducts() {
                 if (this.sorting !== 'default') {
@@ -204,12 +220,12 @@
               },
         
               async openModal(product) {
-                this.isOpenModal = true;
-                this.selectedProduct = product;
-                const productData = await fetch(`https://fakestoreapi.com/products/${product.id}`);
-                const data = await productData.json();
-                this.selectedProduct.rating = data.rating;
-                this.selectedProduct.reviews = data.reviews;
+        this.isOpenModal = true;
+        this.selectedProduct = product;
+        const productData = await fetch(`https://fakestoreapi.com/products/${product.id}`);
+        const data = await productData.json();
+        this.selectedProduct.rating = data.rating;
+        this.selectedProduct.reviews = data.reviews;
               },
             };
           }

@@ -50,7 +50,7 @@
     </header>
 
     <main>
-        <div x-data="productStore()" x-init="fetchProducts">
+        <div x-data="productStore()" x-init="fetchProducts(); fetchCategories()">
             <div class="mb-4">
                 <input type="text" placeholder="Search" x-model="searchTerm" @input="searchProducts" class="p-2 border border-gray-300 rounded">
                 <select x-model="sorting" @change="sortProducts" class="p-2 border border-gray-300 rounded">
@@ -61,9 +61,9 @@
                 <select x-model="filterItem" @change="fetchProducts" class="p-2 border border-gray-300 rounded">
                     <option value="All categories">All categories</option>
                     <template x-for="category in categories" :key="category">
-                        <option :value="category" x-text="category"></option>
+                      <option :value="category" x-text="category"></option>
                     </template>
-                </select>
+                  </select>
             </div>
 
             <!-- Loading Indicator -->
